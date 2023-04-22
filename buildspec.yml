@@ -5,7 +5,6 @@ phases:
     commands:
       - echo Connecting to Amazon ECR...
       - aws --version
-      # - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - aws ecr get-login-password --region ap-southeast-1 | docker login
         --username AWS --password-stdin
         792519784540.dkr.ecr.ap-southeast-1.amazonaws.com
@@ -16,14 +15,13 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build --platform linux/amd64 -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker build --platform linux/amd64 -t vanhauknc:latest .
+      - docker tag vanhauknc:latest $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"simple-app","imageUri":"%s"}]'
         $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
